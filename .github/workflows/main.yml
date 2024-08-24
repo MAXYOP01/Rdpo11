@@ -13,3 +13,16 @@ jobs:
           reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
           netsh advfirewall firewall set rule group="remote desktop" new enable=Yes
           net localgroup "Remote Desktop Users" "runneradmin" /add
+
+      - name: Get Local IP Address
+        id: get_ip
+        run: |
+          $ip = (Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Ethernet" | Select-Object -ExpandProperty IPAddress)
+          Write-Output "RDP IP Address: $ip" | Out-File -FilePath rdp_details.txt
+
+      - name: Output RDP Connection Details
+        run: |
+          echo "Your RDP Session is Ready!"
+          echo "IP Address: $(cat rdp_details.txt)"
+          echo "Username: runneradmin"
+          echo "Password: YourPasswordHere"
