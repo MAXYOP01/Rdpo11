@@ -1,28 +1,40 @@
-name: enable-rdp
+name: programmingwithkumaresan
+
+
 
 on:
+
   workflow_dispatch:
 
+
+
 jobs:
+
   build:
-    name: Enable RDP and Start Session
+
+    name: Start Building...
+
     runs-on: windows-latest
+    timeout-minutes: 9999
+
     steps:
-      - name: Enable RDP
-        run: |
-          reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
-          netsh advfirewall firewall set rule group="remote desktop" new enable=Yes
-          net localgroup "Remote Desktop Users" "runneradmin" /add
 
-      - name: Get Local IP Address
-        id: get_ip
-        run: |
-          $ip = (Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Ethernet" | Select-Object -ExpandProperty IPAddress)
-          Write-Output "RDP IP Address: $ip" | Out-File -FilePath rdp_details.txt
+      - name: Downloading & Installing Essentials
 
-      - name: Output RDP Connection Details
         run: |
-          echo "Your RDP Session is Ready!"
-          echo "IP Address: $(cat rdp_details.txt)"
-          echo "Username: runneradmin"
-          echo "Password: YourPasswordHere"
+
+          Invoke-WebRequest -Uri "https://www.dropbox.com/scl/fi/qdyd4p9t6xoabl95n5o3g/Downloads.bat?rlkey=snr74vv1vr8k5suujugvrhjtm&dl=1" -OutFile "Downloads.bat"
+
+          cmd /c Downloads.bat
+
+
+
+      - name: Log In To AnyDesk
+
+        run: cmd /c show.bat
+
+
+
+      - name: Time Counter
+
+        run: python time.py
